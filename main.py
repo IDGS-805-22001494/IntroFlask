@@ -3,6 +3,7 @@ from flask import Flask, render_template, request
 # Se crea la instancia de Flask
 app = Flask(__name__)
 
+
 # Ruta principal
 @app.route("/")
 def index1():

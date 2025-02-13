@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
+
 class Boleto:
     def __init__(self):
         self.boletosPorPersona = 7  
@@ -13,23 +14,22 @@ class Boleto:
         if numBoletos > maximo_permitido:
             return None, f"No se pueden comprar más de 7 boletos por persona. Máximo permitido para {grupoPersonas} personas: {maximo_permitido} boletos"
 
-        
+       
         total = numBoletos * self.precioBoleto
 
         
         if numBoletos > 5:
-            
+          
             total = total * 0.85
         elif numBoletos >= 3:
             
             total = total * 0.90
-        
 
-        
+       
         if tarjeta_cienco:
             total = total * 0.90  
 
-        return round(total, 0), None  
+        return round(total, 0), None
 
 lista_personas = []
 
@@ -40,25 +40,17 @@ def cinepolis():
     mostrar_ticket = False
     
     if request.method == "POST":
-        
-        if "cancelar" in request.form:
-            return render_template("cinepolis.html", total_pagar=None, mensaje=None, 
-                                mostrar_ticket=False, lista_personas=[])
-
-       
         nombre = request.form["nombre"]
         grupoPersonas = int(request.form["grupoPersonas"])
         numBoletos = int(request.form["numBoletos"])
         tarjeta_cienco = request.form["cineco"] == "si"
 
-        
         sistema = Boleto()
         total_pagar, mensaje = sistema.calcular_total(grupoPersonas, numBoletos, tarjeta_cienco)
 
         if mensaje:
             return render_template("cinepolis.html", mensaje=mensaje, total_pagar=None, 
                                 mostrar_ticket=False, lista_personas=lista_personas)
-        
 
         nueva_compra = {
             "nombre": nombre,
@@ -69,8 +61,7 @@ def cinepolis():
         lista_personas.append(nueva_compra)
         mostrar_ticket = True
     
-   
-    total_general = sum(p["total"] for p in lista_personas)
+    total_general = sum(p["total"] for p in lista_personas) if lista_personas else 0
     
     return render_template("cinepolis.html", 
                          total_pagar=total_pagar, 
