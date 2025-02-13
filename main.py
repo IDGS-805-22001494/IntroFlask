@@ -10,6 +10,7 @@ def index1():
     lista = ["Python", "Java", "C#", "JavaScript"]
     return render_template("index.html", titulo=titulo, lista=lista)
 
+
 # Rutas con parámetros dinámicos
 @app.route('/user/<string:user>')
 def user(user):

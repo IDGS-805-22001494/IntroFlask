@@ -45,6 +45,7 @@ def cinepolis1():
         if mensaje:
             return render_template("cinepolis.html", mensaje=mensaje, total_pagar=None, mostrar_ticket=False, lista_personas=lista_personas)
         
+        
         lista_personas.append({"nombre": nombre, "total": total_pagar})
         mostrar_ticket = True
     
