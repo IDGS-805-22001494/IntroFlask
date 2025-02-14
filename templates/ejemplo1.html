@@ -3,5 +3,10 @@
 
 
 {% block content %}
+{% import "_macros.html" as macros %}
+
 <h1>Ejemplo 1</h1>
+macros.datos("nombre", "Ingrese su nombre")
+{{ macros.datos("nombre", "nombre") }}
+{{ macros.datos("Nombre","password", "password") }}
 {% endblock %}
