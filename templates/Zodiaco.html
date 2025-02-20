@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zodiaco Chino</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <h1 class="mb-4">Zodiaco Chino</h1>
+        <div class="row">
+           
+            <div class="col-md-6">
+                <form method="POST" action="/Zodiaco">
+                    {{ form.hidden_tag() }}
+
+                    {% from "_macroszodiaco.html" import render_field, render_radio_field %}
+
+                    {{ render_field(form.nombre) }}
+                    {{ render_field(form.apellidopaterno) }}
+                    {{ render_field(form.apellidomaterno) }}
+
+                    <div class="form-row">
+                        <div class="col">
+                            {{ render_field(form.dia) }}
+                        </div>
+                        <div class="col">
+                            {{ render_field(form.mes) }}
+                        </div>
+                        <div class="col">
+                            {{ render_field(form.año) }}
+                        </div>
+                    </div>
+
+                    {{ render_radio_field(form.sexo) }}
+
+                    <div class="form-group">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+
+           
+            <div class="col-md-6">
+                {% if nombre %}
+                <div class="card">
+                    <div class="card-body">
+                        <strong>
+                            <p>Hola {{ nombre }} {{ apellidopaterno }} {{ apellidomaterno }}</p>
+                        </strong>
+                        <!-- <p class="card-text"><strong>Fecha de Nacimiento:</strong> {{ dia }}/{{ mes }}/{{ año }}</p> -->
+                        <strong>  <p class="card-text">Sexo: {{ sexo }}</p></strong>
+                        <strong>
+                            <p class="card-text">Tienes {{ edad }} años</p>
+                        </strong>
+                        <strong>
+                            <p class="card-text">Signo Zodiacal Chino es: {{ signo_zodiaco }}</p>
+                        </strong>
+                        <img src="{{ url_for('static', filename='img/' + signo_zodiaco + '.jpg') }}"
+                            alt="{{ signo_zodiaco }}" class="img-fluid" >
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

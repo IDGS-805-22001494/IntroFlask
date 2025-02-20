@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request # type: ignore
-import forms 
+import forms # type: ignore
+from zodiaco import ZodiacoForm # type: ignore
+from datetime import datetime # type: ignore
 
-# Se crea la instancia de Flask
 app = Flask(__name__)
 
+app.secret_key = '161103'
 
 # Ruta principal
 @app.route("/")
@@ -19,15 +21,60 @@ def alumnos():
     ape=''
     email=''
     alumno_clase=forms.UserForm(request.form)
-    if request.method == "POST":
+    if request.method == "POST" and alumno_clase.validate():
         mat = alumno_clase.matricula.data
         nom = alumno_clase.nombre.data
         ape = alumno_clase.apellido.data
         email = alumno_clase.email.data
-        print('Nombre: {}'.format(nom))
-        return render_template("Alumnos.html", form=alumno_clase)
-    else:
-        return render_template("Alumnos.html", form=alumno_clase)
+    return render_template("Alumnos.html", form=alumno_clase,mat=mat, nom=nom, ape=ape, email=email)
+    
+def calcular_edad(año, mes, dia):
+    hoy = datetime.today()
+    edad = hoy.year - año
+    if (hoy.month, hoy.day) < (mes, dia):
+        edad -= 1
+    return edad
+
+def obtener_signo_zodiaco_chino(año):
+    signos = ["Rata", "Buey", "Tigre", "Conejo", "Dragon", "Serpiente", "Caballo", "Cabra", "Mono", "Gallo", "Perro", "Cerdo"]
+    return signos[(año - 1900) % 12]
+
+@app.route('/Zodiaco', methods=['GET', 'POST'])
+def index():
+    form = ZodiacoForm(request.form)
+    nombre = None
+    apellidopaterno = None
+    apellidomaterno = None
+    dia = None
+    mes = None
+    año = None
+    sexo = None
+    edad = None
+    signo_zodiaco = None
+
+    if request.method == 'POST' and form.validate():
+        nombre = form.nombre.data
+        apellidopaterno = form.apellidopaterno.data
+        apellidomaterno = form.apellidomaterno.data
+        dia = form.dia.data
+        mes = form.mes.data
+        año = form.año.data
+        sexo = form.sexo.data
+
+        edad = calcular_edad(año, mes, dia)
+        signo_zodiaco = obtener_signo_zodiaco_chino(año)
+
+    return render_template('zodiaco.html', 
+                           form=form, 
+                           nombre=nombre, 
+                           apellidopaterno=apellidopaterno,
+                           apellidomaterno=apellidomaterno,
+                           dia=dia, 
+                           mes=mes, 
+                           año=año, 
+                           sexo=sexo, 
+                           edad=edad, 
+                           signo_zodiaco=signo_zodiaco)
 # Rutas con parámetros dinámicos
 @app.route('/user/<string:user>')
 def user(user):
