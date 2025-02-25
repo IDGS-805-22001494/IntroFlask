@@ -24,7 +24,7 @@ class ZodiacoForm(FlaskForm):
     ])
     año = IntegerField('Año', [
         validators.DataRequired(message="El año es requerido"),
-        validators.NumberRange(min=1900, max=2025, message="El año debe estar entre 1900 y 2025")
+        validators.NumberRange(min=1900, max=2100, message="El año debe estar entre 1900 y 2100")
     ])
     sexo = RadioField('Sexo', choices=[('hombre', 'Hombre'), ('mujer', 'Mujer')], validators=[
         validators.DataRequired(message="El sexo es requerido")

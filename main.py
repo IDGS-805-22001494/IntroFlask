@@ -1,11 +1,28 @@
-from flask import Flask, render_template, request # type: ignore
+from flask import Flask, render_template, request, g # type: ignore
 import forms # type: ignore
 from zodiaco import ZodiacoForm # type: ignore
 from datetime import datetime # type: ignore
-
+from flask import flash # type: ignore
+from flask_wtf.csrf import CSRFProtect # type: ignore
 app = Flask(__name__)
 
 app.secret_key = '161103'
+csrf = CSRFProtect()
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+# para poder hacer autentificacion de usuario y permisos
+@app.before_request
+def before_request():
+    g.nombre = "Juan"
+    print("before 1")
+    
+@app.after_request
+def after_request(response):
+    g.nombre = "Juan"
+    print("after 1")
+    return response
 
 # Ruta principal
 @app.route("/")
@@ -16,6 +33,7 @@ def index1():
 
 @app.route("/Alumnos", methods=["GET", "POST"])
 def alumnos():
+    print("alumno:{}".format(g.nombre))
     mat=''
     nom = ''
     ape=''
@@ -26,6 +44,10 @@ def alumnos():
         nom = alumno_clase.nombre.data
         ape = alumno_clase.apellido.data
         email = alumno_clase.email.data
+        mensaje = 'Bienvenido {}'.format(nom)
+        flash(mensaje)
+        
+        
     return render_template("Alumnos.html", form=alumno_clase,mat=mat, nom=nom, ape=ape, email=email)
     
 def calcular_edad(año, mes, dia):
@@ -177,4 +199,5 @@ def cinepolis1():
 
 # Punto de entrada de la aplicación
 if __name__ == '__main__':
+    csrf.init_app(app)
     app.run(debug=True, port=8000)
